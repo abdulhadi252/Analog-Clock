@@ -1,37 +1,74 @@
-#clockcontainer{
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0f;
+    font-family: 'Space Mono', monospace;
+}
+
+body::before {
+    content: 'ANALOG CLOCK';
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: #3a3a55;
+    margin-bottom: 2rem;
+}
+
+#clockcontainer {
     position: relative;
     height: 40vh;
     width: 40vh;
-    background: url("clock2.jfif") no-repeat;
+    background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCZ5Fa-wpPWOfgEPbh7F-arD-iZIr60rP4tw&s") no-repeat;
     background-size: 100%;
     margin: auto;
-    position: relative;
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 6px #0d0d15,
+        0 0 0 8px #1e1e30,
+        0 0 40px rgba(124, 58, 237, 0.15);
 }
-#hour,#minute,#second{
+
+#hour,
+#minute,
+#second {
     position: absolute;
-    background-color: black;
     border-radius: 10px 10px 0px 0px;
     transform-origin: bottom;
 }
+
 #hour {
     height: 23.5%;
     width: 1.5%;
     top: 26.5%;
     left: 49.30%;
-    opacity: 0.8;
-
+    opacity: 0.9;
+    background-color: #d0cff0;
 }
+
 #minute {
     height: 29.5%;
     width: 1.5%;
     top: 20.5%;
     left: 49.30%;
-    opacity: 0.8;
+    opacity: 0.9;
+    background-color: #a09fc0;
 }
+
 #second {
     height: 35.5%;
     width: 1%;
     top: 14.5%;
-    opacity: 0.8;
     left: 49.40%;
-    }
+    opacity: 1;
+    background: linear-gradient(to top, #7c3aed, #2dd4bf);
+}
