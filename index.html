@@ -1,19 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analog Clock</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap">
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analog Clock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="clockcontainer">
-        <div id="hour"></div>
-        <div id="minute"></div>
-        <div id="second"></div>
+<div class="wrapper">
+  <div class="label-top">CHRONOMETER</div>
+
+  <div class="clock-shell">
+    <div class="outer-ring2"></div>
+    <div class="outer-ring"></div>
+
+    <div class="clock-face" id="clockFace">
+      <div class="ticks" id="ticks"></div>
+      <div class="numbers" id="numbers"></div>
+
+      <div class="hand" id="hour"></div>
+      <div class="hand" id="minute"></div>
+      <div class="hand" id="second"></div>
+
+      <div class="center-dot"></div>
     </div>
+    <div class="glow-ring"></div>
+  </div>
+
+  <!-- Digital panel -->
+  <div class="digital-panel">
+    <div class="panel-row">
+      <div class="time-display" id="digitalTime">
+        <span id="dHour">00</span><span class="colon">:</span><span id="dMin">00</span><span class="colon">:</span><span id="dSec">00</span>
+      </div>
+      <div class="ampm-badge" id="ampm">AM</div>
+    </div>
+    <div class="panel-sub">
+      <div class="date-display" id="dateDisplay">MON <span>--</span></div>
+      <div class="seconds-bar-wrap">
+        <span class="sec-label">SEC</span>
+        <div class="seconds-bar">
+          <div class="seconds-bar-fill" id="secBar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="tz-display">LOCAL <span id="tzDisplay">UTC+00:00</span></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>

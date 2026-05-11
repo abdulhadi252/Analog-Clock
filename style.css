@@ -1,74 +1,409 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
-
-body {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #0a0a0f;
-    font-family: 'Space Mono', monospace;
+:root {
+  --bg: #050509;
+  --panel: #0c0c14;
+  --border: #1a1a2e;
+  --accent: #00d4ff;
+  --accent2: #ff6b35;
+  --accent3: #7fff00;
+  --text: #c0c8e0;
+  --text-dim: #404060;
+  --glow: rgba(0, 212, 255, 0.4);
+  --glow2: rgba(255, 107, 53, 0.4);
 }
 
+html, body {
+  height: 100%;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Share Tech Mono', monospace;
+  overflow: hidden;
+}
+
+/* Animated grid background */
 body::before {
-    content: 'ANALOG CLOCK';
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    color: #3a3a55;
-    margin-bottom: 2rem;
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 0;
+  pointer-events: none;
 }
 
-#clockcontainer {
-    position: relative;
-    height: 40vh;
-    width: 40vh;
-    background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCZ5Fa-wpPWOfgEPbh7F-arD-iZIr60rP4tw&s") no-repeat;
-    background-size: 100%;
-    margin: auto;
-    border-radius: 50%;
-    box-shadow:
-        0 0 0 6px #0d0d15,
-        0 0 0 8px #1e1e30,
-        0 0 40px rgba(124, 58, 237, 0.15);
+/* Radial vignette */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, #050509 100%);
+  z-index: 0;
+  pointer-events: none;
 }
 
-#hour,
-#minute,
-#second {
-    position: absolute;
-    border-radius: 10px 10px 0px 0px;
-    transform-origin: bottom;
+.wrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* Top label */
+.label-top {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.label-top::before,
+.label-top::after {
+  content: '';
+  display: block;
+  width: 30px;
+  height: 1px;
+  background: var(--text-dim);
+}
+
+/* Clock outer ring */
+.clock-shell {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+/* Rotating outer decoration ring */
+.outer-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,212,255,0.15);
+  animation: spin-slow 30s linear infinite;
+}
+.outer-ring::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
+}
+.outer-ring::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: var(--accent2);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--accent2);
+}
+
+/* Second outer ring (counter-rotating) */
+.outer-ring2 {
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0,212,255,0.08);
+  animation: spin-slow 60s linear infinite reverse;
+}
+
+/* Glow ring */
+.glow-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2px rgba(0,212,255,0.12),
+    0 0 30px rgba(0,212,255,0.1),
+    0 0 60px rgba(0,212,255,0.05),
+    inset 0 0 30px rgba(0,212,255,0.05);
+  pointer-events: none;
+  z-index: 10;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* Main clock face */
+.clock-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(0,212,255,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 75%, rgba(255,107,53,0.03) 0%, transparent 60%),
+    radial-gradient(circle at center, #111120 0%, #0a0a14 60%, #070710 100%);
+  border: 2px solid rgba(0,212,255,0.2);
+  overflow: hidden;
+}
+
+/* Tick marks */
+.ticks {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.tick {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform-origin: 50% 150px;
+  width: 1px;
+}
+.tick::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 6px;
+  background: rgba(0,212,255,0.3);
+  margin: 8px auto 0;
+}
+.tick.major::after {
+  height: 14px;
+  width: 2px;
+  background: rgba(0,212,255,0.7);
+  box-shadow: 0 0 6px rgba(0,212,255,0.5);
+}
+
+/* Hour numbers */
+.numbers {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.num {
+  position: absolute;
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(0,212,255,0.6);
+  text-align: center;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  margin-left: -12px;
+  margin-top: -12px;
+  letter-spacing: 0;
+}
+
+/* Center dot */
+.center-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent), 0 0 20px var(--accent);
+  z-index: 20;
+}
+.center-dot::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Clock hands */
+.hand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  border-radius: 4px 4px 2px 2px;
 }
 
 #hour {
-    height: 23.5%;
-    width: 1.5%;
-    top: 26.5%;
-    left: 49.30%;
-    opacity: 0.9;
-    background-color: #d0cff0;
+  width: 4px;
+  height: 80px;
+  margin-left: -2px;
+  background: linear-gradient(to top, rgba(0,212,255,0.3), #c0d8ff);
+  box-shadow: 0 0 6px rgba(192,216,255,0.5);
 }
 
 #minute {
-    height: 29.5%;
-    width: 1.5%;
-    top: 20.5%;
-    left: 49.30%;
-    opacity: 0.9;
-    background-color: #a09fc0;
+  width: 3px;
+  height: 105px;
+  margin-left: -1.5px;
+  background: linear-gradient(to top, rgba(0,212,255,0.2), #80b8ff);
+  box-shadow: 0 0 5px rgba(128,184,255,0.4);
 }
 
 #second {
-    height: 35.5%;
-    width: 1%;
-    top: 14.5%;
-    left: 49.40%;
-    opacity: 1;
-    background: linear-gradient(to top, #7c3aed, #2dd4bf);
+  width: 1.5px;
+  height: 120px;
+  margin-left: -0.75px;
+  background: linear-gradient(to top, var(--accent2), #ffaa00);
+  box-shadow: 0 0 8px rgba(255,107,53,0.8), 0 0 16px rgba(255,107,53,0.4);
+}
+
+/* Second hand tail */
+#second::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1.5px;
+  height: 25px;
+  background: var(--accent2);
+  opacity: 0.6;
+}
+
+/* Digital display panel */
+.digital-panel {
+  margin-top: 28px;
+  width: 320px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: 1px solid rgba(0,212,255,0.2);
+  border-radius: 4px;
+  padding: 16px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.digital-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+.panel-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.time-display {
+  font-family: 'Orbitron', monospace;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 10px var(--glow), 0 0 20px var(--glow);
+  line-height: 1;
+}
+
+.time-display .colon {
+  animation: blink 1s step-end infinite;
+}
+
+.ampm-badge {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--bg);
+  background: var(--accent);
+  padding: 3px 7px;
+  border-radius: 2px;
+  letter-spacing: 0.1em;
+  box-shadow: 0 0 8px var(--glow);
+}
+
+.panel-sub {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.date-display {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+.date-display span {
+  color: var(--text);
+}
+
+.seconds-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sec-label {
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+.seconds-bar {
+  width: 80px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.seconds-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent2), #ffaa00);
+  border-radius: 2px;
+  box-shadow: 0 0 6px var(--glow2);
+  transition: width 0.25s ease;
+}
+
+/* Timezone */
+.tz-display {
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  margin-top: 8px;
+  text-align: right;
+}
+.tz-display span {
+  color: rgba(0,212,255,0.4);
+}
+
+/* Animations */
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 2px rgba(0,212,255,0.12),
+      0 0 30px rgba(0,212,255,0.1),
+      0 0 60px rgba(0,212,255,0.05),
+      inset 0 0 30px rgba(0,212,255,0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px rgba(0,212,255,0.2),
+      0 0 40px rgba(0,212,255,0.18),
+      0 0 80px rgba(0,212,255,0.08),
+      inset 0 0 40px rgba(0,212,255,0.08);
+  }
 }
